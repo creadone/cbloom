@@ -4,7 +4,7 @@ Sharded Bloom Filter for internal use.
 
 ## Installation
 
-`shards build --release`
+`shards install & shards build --release`
 
 ## Usage
 
