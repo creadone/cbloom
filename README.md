@@ -14,7 +14,7 @@ Usage: cbloom [arguments]
     -s INT, --slice=INT              Number of bloom filter slices
     -e FLOAT, --probability=FLOAT    Probability of false positives
     -i INT, --item=INT               Max number of items
-    -p INT, --flush=INT              Port for HTTP Server
+    -p INT, --port=INT              Port for HTTP Server
     -h, --help                       Show this help
 ```
 
