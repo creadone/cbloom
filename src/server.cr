@@ -1,25 +1,40 @@
-require "http/server"
+require "socket"
 
 module Cbloom
   class BloomServer
-    def initialize(@cluster : Cluster, @port : Int32)
+    def initialize(@cluster : Cluster)
+      @socket_path = "/var/run/cbloom.sock"
+      @server = UNIXServer.new(@socket_path)
+
+      Signal::INT.trap do
+        spawn do
+          @server.close
+          @cluster.flush
+          puts "Cbloom Stopped"
+        end
+        sleep 0.1
+        exit(0)
+      end
+    end
+
+    def handle(client)
+      while message = client.gets
+        case message
+        when "get"
+          client.send "#{@cluster.get}\r\n"
+          client.flush
+        when "flush"
+          client.puts @cluster.flush
+        end
+      end
     end
 
     def start
-      server = HTTP::Server.new do |context|
-        context.response.content_type = "text/plain"
-        if context.request.resource == "/get"
-          context.response.puts @cluster.get
-        elsif context.request.resource == "/flush"
-          context.response.puts @cluster.flush
-        else
-          context.response.puts "Cbloom v#{Cbloom::VERSION}"
-        end
+      puts "Cbloom v#{Cbloom::VERSION} started on #{@socket_path}"
+      while client = @server.accept?
+        spawn handle(client)
       end
-
-      address = server.bind_tcp "0.0.0.0", @port
-      puts "Cbloom v#{Cbloom::VERSION} listening on http://#{address}"
-      server.listen
     end
+
   end
 end

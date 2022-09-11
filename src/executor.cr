@@ -4,11 +4,9 @@ module Cbloom
   class Executor
     def initialize(**opts)
       @directory = opts["directory"].as(String)
-      @slice = opts["slice"].as(Int32)
+      @shards = opts["shards"].as(Int32)
       @probability = opts["probability"].as(Float32)
       @item = opts["item"].as(Int64)
-      @flush = opts["flush"].as(Int32)
-      @port = opts["port"].as(Int32)
 
       validate!
     end
@@ -16,20 +14,19 @@ module Cbloom
     def call
       if File.exists?(File.join(@directory, "config.json"))
         cluster = load_cluster
-        start_server(cluster, @port)
+        start_server(cluster)
       else
         cluster = setup_cluster
-        start_server(cluster, @port)
+        start_server(cluster)
       end
     end
 
     private def setup_cluster
       cluster = Cluster.create(
         directory: @directory,
-        slice: @slice,
+        shards: @shards,
         probability: @probability,
-        item: @item,
-        port: @port
+        item: @item
       )
       cluster.build.flush
       cluster
@@ -39,13 +36,13 @@ module Cbloom
       Cluster.load(@directory)
     end
 
-    private def start_server(cluster, port)
-      BloomServer.new(cluster, port).start
+    private def start_server(cluster)
+      BloomServer.new(cluster).start
     end
 
     private def validate!
-      if (@item // @slice) > 400_000_000
-        raise Exception.new("Probably slice number should be #{@item // 400_000_000}")
+      if (@item // @shards) > 400_000_000
+        raise Exception.new("Probably shard number should be #{@item // 400_000_000}")
       end
     end
   end

@@ -6,7 +6,6 @@ source  = {
 }
 dependencies = {
     'lua >= 5.1',
-    'http >= 1.3.0'
 }
 build = {
     type = 'builtin',

@@ -1,7 +1,7 @@
 name: cbloom
 license: MIT
 
-version: 1.0.0
+version: 1.1.0
 crystal: 1.5.0
 
 authors:
@@ -16,3 +16,5 @@ dependencies:
     git: git@github.com:roleus/bloom.git
   nanoid:
     git: git@github.com:mamantoha/nanoid.cr.git
+  pool:
+    git: git@github.com:ysbaddaden/pool.git

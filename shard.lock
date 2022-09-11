@@ -8,3 +8,7 @@ shards:
     git: git@github.com:mamantoha/nanoid.cr.git
     version: 0.7.0
 
+  pool:
+    git: git@github.com:ysbaddaden/pool.git
+    version: 0.2.4
+

@@ -1,40 +1,35 @@
-local http = require('http.client')
+local socket = require('socket')
+local string = require('string')
 
 local M = {}
 
 M.config = {
-  ['host'] = '127.0.0.1',
-  ['port'] = 2023,
-  ['http'] = nil
+  ['path'] = nil,
+  ['sock'] = nil
 }
 
-function M.setup(host, port)
-  M.config['host'] = host
-  M.config['port'] = port
-  M.config['http'] = http.new({ max_connections = 30 })
+function M.setup(path)
+  M.config.path = path
+  M.config.sock = socket.tcp_connect('unix/', path)
+  M.config.sock:nonblock(true)
+  M.config.sock:linger(false)
   return M
 end
 
-function M.request(cmd)
-  local host = 'http://' .. M.config.host .. ':' .. M.config.port .. '/'
-  local url  = host .. M.trim(cmd)
-  local response = M.config['http']:get(url)
+function M._send(cmd)
+  local command = cmd .. '\r\n'
+  return M.config.sock:send(command)
+end
 
-  if response.status == 200 then
-    return M.trim(response.body)
-  end
+function M._read()
+  return M.config.sock:read('\r\n')
 end
 
 function M.get()
-  return M.request('get')
-end
-
-function M.flush()
-  return M.request('flush')
-end
-
-function M.trim(s)
-   return (s:gsub("^%s*(.-)%s*$", "%1"))
+  local response = M._send('get')
+  if response ~= nil then
+    return M._read()
+  end
 end
 
 return M
