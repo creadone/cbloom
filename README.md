@@ -10,11 +10,11 @@ Sharded Bloom Filter with hash generation for use on my internal project. Cbloom
 
 ```
 Usage: cbloom [arguments]
-    -d PATH, --directory=PATH        Path to directory where bitmaps are stored
-    -s INT, --slice=INT              Number of bloom filter slices
+    -d PATH,  --directory=PATH       Path to directory where bitmaps are stored
+    -s INT,   --shards=INT           Number of bloom filter shards
     -e FLOAT, --probability=FLOAT    Probability of false positives
-    -i INT, --item=INT               Max number of items
-    -h, --help                       Show this help
+    -i INT,   --item=INT             Max number of items
+    -h,       --help                 Show this help
 ```
 
 ## Usage
@@ -25,8 +25,11 @@ Usage: cbloom [arguments]
 ```
 
 **Call**
-```
+```lua
+local cbloom = require('cbloom')
 
+cbloom.setup('/var/run/cbloom.sock')
+print(cbloom.get())
 ```
 
 ## Contributors
