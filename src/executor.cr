@@ -7,6 +7,7 @@ module Cbloom
       @shards = opts["shards"].as(Int32)
       @probability = opts["probability"].as(Float32)
       @item = opts["item"].as(Int64)
+      @socket = opts["socket"].as(String)
 
       validate!
     end
@@ -37,7 +38,7 @@ module Cbloom
     end
 
     private def start_server(cluster)
-      BloomServer.new(cluster).start
+      BloomServer.new(cluster, @socket).start
     end
 
     private def validate!

@@ -4,17 +4,22 @@ require "./executor"
 
 module Cbloom
   VERSION = `shards version`.strip
-
-  directory = "./bitmaps"
-  shards = 5
+  
+  directory   = "./bitmaps"
+  socket      = "/var/run/cbloom.sock"
+  shards      = 5
   probability = 0.01_f32
-  item = 1_000_000_i64
+  item        = 1_000_000_i64
 
   OptionParser.parse do |parser|
     parser.banner = "Usage: cbloom [arguments]"
 
     parser.on("-d PATH", "--directory=PATH", "Path to directory where bitmaps are stored") do |path|
       directory = Path[path.strip].expand.to_s
+    end
+
+    parser.on("-t PATH", "--socket=PATH", "Path to socket if used multiple instances") do |path|
+      socket = Path[path.strip].expand.to_s
     end
 
     parser.on("-s INT", "--shards=INT", "Number of bloom filter shards") do |int|
@@ -45,6 +50,7 @@ module Cbloom
     directory: directory,
     shards: shards,
     probability: probability,
-    item: item
+    item: item,
+    socket: socket
   ).call
 end

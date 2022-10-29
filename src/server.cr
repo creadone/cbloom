@@ -2,9 +2,8 @@ require "socket"
 
 module Cbloom
   class BloomServer
-    def initialize(@cluster : Cluster)
-      @socket_path = "/var/run/cbloom.sock"
-      @server = UNIXServer.new(@socket_path)
+    def initialize(@cluster : Cluster, @socket : String)
+      @server = UNIXServer.new(@socket)
 
       Signal::INT.trap do
         spawn do
@@ -30,7 +29,7 @@ module Cbloom
     end
 
     def start
-      puts "Cbloom v#{Cbloom::VERSION} started on #{@socket_path}"
+      puts "Cbloom v#{Cbloom::VERSION} started on #{@socket}"
       while client = @server.accept?
         spawn handle(client)
       end
