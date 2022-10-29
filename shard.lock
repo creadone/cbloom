@@ -2,7 +2,7 @@ version: 2.0
 shards:
   bloom_filter:
     git: git@github.com:willhbr/bloom_filter.git
-    version: 0.1.0
+    version: 0.1.0+git.commit.de4f9a39a8105c0a634f61b515b02ff00215929f
 
   nanoid:
     git: git@github.com:mamantoha/nanoid.cr.git
