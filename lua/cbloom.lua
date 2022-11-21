@@ -1,5 +1,4 @@
 local socket = require('socket')
-local string = require('string')
 
 local M = {}
 
